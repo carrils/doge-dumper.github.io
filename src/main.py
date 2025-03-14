@@ -46,23 +46,30 @@ def main():
     contracts_total_value = total_value_html_thing[0]
     contracts_savings = savings_html_thing[0]
     # Grants: 6289 grant terminations totaling ~$15B in savings. Descriptions are forthcoming.
-    # grants_total_value
-    # grants_savings
+    grants_total_value = total_value_html_thing[1]
+    grants_savings = savings_html_thing[1]
     # Real Estate: 747 lease terminations totaling 9,517,975 square feet and ~$468M in lease savings.
-    # real_estate_total_value
-    # real_estate_savings
+    real_estate_total_value = total_value_html_thing[2]
+    real_estate_savings = savings_html_thing[2]
 
     # go a little harder on the html files to extract the link here
     with open('files/Savings/Savings.html', 'r', encoding='utf-8') as file:
         html_content = file.read()
-    soup = BeautifulSoup(html_content, 'html.parser')
-    contract_table = soup.find('table')
-    links = []
-    for link in contract_table.find_all('a'):
-        links.append(link.get('href'))
+    savings_soup = BeautifulSoup(html_content, 'html.parser')
 
-    links_series = pd.Series(links)
-    pd.concat(df)
+    with open('files/Total_Value/Total_Value.html', 'r', encoding='utf-8') as file:
+        html_content = file.read()
+    value_soup = BeautifulSoup(html_content, 'html.parser')
+
+    savings_contract_table = savings_soup.find('table')
+    value_contract_table = value_soup.find('table')
+
+    value_links = []
+    for link in value_contract_table.find_all('a'):
+        value_links.append(link.get('href'))
+
+    value_links_series = pd.Series(value_links)
+    contracts_total_value["Link"] = value_links_series
     # [print?]
     # with ExcelWriter(os.path.join("files/Savings/Savings.xlsx")) as writer:
 
