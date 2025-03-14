@@ -8,7 +8,8 @@ import math
 import glob
 import os
 import lxml  # lol pd.read_tml
-
+from pandas import ExcelWriter
+from bs4 import BeautifulSoup
 
 def integerizer(soup):
     soup = soup.strip('$')
@@ -35,12 +36,15 @@ def main():
     # super_df.to_csv("../files/super_doge.csv", index=False)
     # print("Savings: Total value - current obligation")
     # print("Total Value: The potential expenditure (with options).")
-    savings_html_thing = pd.read_html("files/Savings/Savings.html")
-    total_value_html_thing = pd.read_html("files/Total_Value/Total_Value.html")
+    # To get these html files go to doge.gov and expand all 3 tables, then save as.
+    # flip the little thing at the top to the other thing and then repeat
+    # thing == list of dataframes.
+    savings_html_thing = pd.read_html("files/Savings/Savings.html")  # 3.13.25
+    total_value_html_thing = pd.read_html("files/Total_Value/Total_Value.html")  # 3.13.25
 
     # Contracts: 4083 contract terminations totaling ~$15B in savings.
-    # contracts_total_value
-    # contracts_savings
+    contracts_total_value = total_value_html_thing[0]
+    contracts_savings = savings_html_thing[0]
     # Grants: 6289 grant terminations totaling ~$15B in savings. Descriptions are forthcoming.
     # grants_total_value
     # grants_savings
@@ -49,7 +53,20 @@ def main():
     # real_estate_savings
 
     # go a little harder on the html files to extract the link here
+    with open('files/Savings/Savings.html', 'r', encoding='utf-8') as file:
+        html_content = file.read()
+    soup = BeautifulSoup(html_content, 'html.parser')
+    contract_table = soup.find('table')
+    links = []
+    for link in contract_table.find_all('a'):
+        links.append(link.get('href'))
 
+    links_series = pd.Series(links)
+    pd.concat(df)
+    # [print?]
+    # with ExcelWriter(os.path.join("files/Savings/Savings.xlsx")) as writer:
+
+    # with ExcelWriter(os.path.join("files/Total_Value/Total_Value.xlsx")) as writer:
 
 if __name__ == "__main__":
     main()
