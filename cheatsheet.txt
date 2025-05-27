@@ -1,0 +1,95 @@
+[schema]
+	{
+	  "success": true,
+	  "result": {
+	    "~~~~~~~": [
+	      {
+	      	~~~~~~~~~~~: ~~~~~
+	      }
+	    ]
+	  },
+	  "meta": {
+	    "total_results": 0,
+	    "pages": 0
+	  }
+	}
+
+[Savings]
+/savings/grants
+	sort_by
+		savings
+		value
+		date
+	sort_order
+		asc
+		desc
+	page
+		1
+	per_page
+		1-500
+curl -X 'GET' \
+  'https://api.doge.gov/savings/grants?sort_by=date&sort_order=desc&page=1&per_page=500' \
+  -H 'accept: application/json'
+
+/savings/contracts
+	sort_by
+		savings
+		value
+		date
+	sort_order
+		asc
+		desc
+	page
+		1
+	per_page
+		1-500
+curl -X 'GET' \
+  'https://api.doge.gov/savings/contracts?sort_by=date&sort_order=desc&page=1&per_page=500' \
+  -H 'accept: application/json'		
+
+/savings/leases
+	sort_by
+		savings
+		value
+		date
+	sort_order
+		asc
+		desc
+	page
+		1
+	per_page
+		1-500
+curl -X 'GET' \
+  'https://api.doge.gov/savings/leases?sort_by=date&sort_order=desc&page=1&per_page=500' \
+  -H 'accept: application/json'
+
+
+---
+[Payments]
+/payments
+	sort_by
+		amount
+		date
+	sort_order
+		asc
+		desc
+	page
+		1
+	per_page
+		1-500
+	filter
+		agency_name
+		date
+		org_name
+	filter_value 
+		custom text / ~~~~
+curl -X 'GET' \
+  'https://api.doge.gov/payments?sort_by=date&sort_order=desc&page=1&per_page=500&filter=agency_name&filter_value=~~~~' \
+  -H 'accept: application/json'
+
+
+/payments/statistics
+No parameters
+curl -X 'GET' \
+  'https://api.doge.gov/payments/statistics' \
+  -H 'accept: application/json'	

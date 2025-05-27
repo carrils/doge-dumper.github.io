@@ -22,12 +22,19 @@ def integerizer(soup):
 
 
 def main():
-    # for now just exploring the response
-    req = requests.get("https://api.doge.gov/savings/contracts?page=1&per_page=500")  # 500 contracts, page 1
-    req_json = req.json()  # can also do .text and .content
-    req_json['meta']  # {'total_results': 10248, 'pages': 21}
-    
+    contracts_500 = requests.get("https://api.doge.gov/savings/contracts?page=1&per_page=500").json()  # can also do .text and .content
+    contracts_500_json_meta = contracts_500['meta']  # {'total_results': 10248, 'pages': 22}
+    contracts_500['meta']['pages']  # 22
 
+    page = 0
+    bin = []  # bin of jsons
+    while page <= contracts_500['meta']['pages']:
+        bin_json = requests.get(f"https://api.doge.gov/savings/contracts?&page={page}&per_page=500").json()
+        if bin_json['success']:  # for some reason only the first try returns a schema validation error who cares fuck elon musk
+            bin.append(bin_json['result']['contracts'])
+        page += 1
+
+    bin_df = pd.DataFrame.from_records(bin)
 
 if __name__ == "__main__":
     main()
