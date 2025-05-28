@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/local/bin/python
 
 import csv
 import json
@@ -10,23 +10,10 @@ import os
 import requests
 
 
-# Plan:
-# read first page then determine how many times to do the curl
-# then consume that json into a df and then you have the contracts.
-# now do the same for grants
-# and now do the same for leases.
-# then you have a days complete data set.
-# doge set.
-def integerizer(soup):
-    soup = soup.strip('$')
-    return int(soup.replace(',', ''))
-
-
 def main():
-    contracts_500 = requests.get(
-        "https://api.doge.gov/savings/contracts?page=1&per_page=500").json()  # can also do .text and .content
-    contracts_500['meta']  # {'total_results': 10248, 'pages': 22}
-    contracts_500['meta']['pages']  # 22
+    contracts_500 = requests.get("https://api.doge.gov/savings/contracts?page=1&per_page=500").json()  # can also do .text and .content
+    # contracts_500['meta']  # {'total_results': 10248, 'pages': 22}
+    # contracts_500['meta']['pages']  # 22
 
     # grants: https://api.doge.gov/savings/grants?page=1&per_page=500
     # leases: https://api.doge.gov/savings/leases?page=1&per_page=500
@@ -43,7 +30,7 @@ def main():
     contract_bin_df = pd.concat(cbin)
 
     gpage = 1
-    gbin = []  # bin of jsons. jsons, once existing, go into the bin.
+    gbin = []
     while gpage <= grants_500['meta']['pages']:
         bin_json = requests.get(f"https://api.doge.gov/savings/grants?page={gpage}&per_page=500").json()
         gbin.append(pd.DataFrame.from_records(bin_json['result']['grants']))
@@ -52,19 +39,24 @@ def main():
     grant_bin_df = pd.concat(gbin)
 
     leases_500 = requests.get('https://api.doge.gov/savings/leases?page=1&per_page=500').json()
-    leases_500_df = pd.DataFrame.from_records(leases_500['result']['leases'])
     lpage = 1
-    lbin = []  # bin of jsons. jsons, once existing, go into the bin.
+    lbin = []
     while lpage <= leases_500['meta']['pages']:
         bin_json = requests.get(f"https://api.doge.gov/savings/leases?&page={lpage}&per_page=500").json()
         lbin.append(pd.DataFrame.from_records(bin_json['result']['leases']))
         lpage += 1
 
     lease_bin_df = pd.concat(lbin)
-
-    print(len(contract_bin_df))
-    print(len(grant_bin_df))
-    print(len(lease_bin_df))
+    # '05-27-2025'
+    with pd.ExcelWriter(f'../files/doge_data_dump_{datetime.today().strftime('%m-%d-%Y')}.xlsx',
+                        engine='xlsxwriter') as writer:
+        contract_bin_df.to_excel(writer, sheet_name='Contracts', index=False)
+        grant_bin_df.to_excel(writer, sheet_name=f'Grants', index=False)
+        lease_bin_df.to_excel(writer, sheet_name=f'Leases', index=False)
+        # column widths courtesy of xlsxwriter.autofit()
+        for sheet in writer.sheets:
+            worksheet = writer.sheets[sheet]
+            worksheet.autofit()
 
 
 if __name__ == "__main__":
