@@ -11,14 +11,21 @@ import requests
 
 
 def main():
-    contracts_500 = requests.get("https://api.doge.gov/savings/contracts?page=1&per_page=500").json()  # can also do .text and .content
+    contracts_500 = requests.get(
+        "https://api.doge.gov/savings/contracts?page=1&per_page=500").json()  # can also do .text and .content
     # contracts_500['meta']  # {'total_results': 10248, 'pages': 22}
     # contracts_500['meta']['pages']  # 22
 
     # grants: https://api.doge.gov/savings/grants?page=1&per_page=500
     # leases: https://api.doge.gov/savings/leases?page=1&per_page=500
+    # payments: 'https://api.doge.gov/payments?page=1&per_page=500'
+    # payment statistics: 'https://api.doge.gov/payments/statistics'
 
     grants_500 = requests.get('https://api.doge.gov/savings/grants?page=1&per_page=500').json()
+    leases_500 = requests.get('https://api.doge.gov/savings/leases?page=1&per_page=500').json()
+    payments_500 = requests.get('https://api.doge.gov/payments?page=1&per_page=500').json()
+    # no params, just returns number of payments made by agency
+    pmt_stats = requests.get('https://api.doge.gov/payments/statistics').json()
 
     cpage = 1
     cbin = []  # bin of jsons. jsons, once existing, go into the bin.
@@ -38,7 +45,6 @@ def main():
 
     grant_bin_df = pd.concat(gbin)
 
-    leases_500 = requests.get('https://api.doge.gov/savings/leases?page=1&per_page=500').json()
     lpage = 1
     lbin = []
     while lpage <= leases_500['meta']['pages']:
@@ -47,12 +53,41 @@ def main():
         lpage += 1
 
     lease_bin_df = pd.concat(lbin)
+
+    ppage = 1
+    pbin = []
+    while ppage <= payments_500['meta']['pages']:  # 215 pages
+        res = requests.get(f"https://api.doge.gov/payments?page={ppage}&per_page=500").json()
+        # res_json = res['result']['payments'].json()
+        for payment in res['result']['payments']:
+            # because not passing an index it breaks so we wrap the dict in a list and call it like an idiot
+            df = pd.DataFrame([payment])
+            pbin.append(df)
+        ppage += 1
+
+    payments_bin_df = pd.concat(pbin)
+
+    pmt_result = pmt_stats['result']
+    lob = []  # list of dfs its a list with df's in it its name is LOB
+    for res in pmt_result:
+        res_df = pd.DataFrame.from_records(pmt_result[f'{res}'])
+        lob.append(res_df)
+
+    # just putting the random shit they compiled onto one df
+    squab = pd.concat(lob, axis=1)
+    squab.insert(2, '', '')
+    squab.insert(5, 'blank', '')
+    squab.columns = ['agency_name', 'count', '', 'date', 'count', '', 'orgn_name', 'count']
+
     # '05-27-2025'
     with pd.ExcelWriter(f'../files/doge_data_dump_{datetime.today().strftime('%m-%d-%Y')}.xlsx',
                         engine='xlsxwriter') as writer:
         contract_bin_df.to_excel(writer, sheet_name='Contracts', index=False)
         grant_bin_df.to_excel(writer, sheet_name=f'Grants', index=False)
         lease_bin_df.to_excel(writer, sheet_name=f'Leases', index=False)
+        payments_bin_df.to_excel(writer, sheet_name=f'Payments', index=False)
+        squab.to_excel(writer, sheet_name=f'Payment Statistics', index=False)
+
         # column widths courtesy of xlsxwriter.autofit()
         for sheet in writer.sheets:
             worksheet = writer.sheets[sheet]
