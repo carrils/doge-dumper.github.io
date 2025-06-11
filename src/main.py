@@ -8,9 +8,11 @@ import math
 import glob
 import os
 import requests
+import xlsxwriter
 
 
 def main():
+    start_time = datetime.now()
     contracts_500 = requests.get(
         "https://api.doge.gov/savings/contracts?page=1&per_page=500").json()  # can also do .text and .content
     # contracts_500['meta']  # {'total_results': 10248, 'pages': 22}
@@ -92,6 +94,8 @@ def main():
         for sheet in writer.sheets:
             worksheet = writer.sheets[sheet]
             worksheet.autofit()
+
+    print(f'Time: {datetime.now() - start_time}')
 
 
 if __name__ == "__main__":
