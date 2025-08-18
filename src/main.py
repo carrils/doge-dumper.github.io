@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/local/bin/python3
 
 import csv
 import json
@@ -7,32 +7,102 @@ import pandas as pd
 import math
 import glob
 import os
+import requests
+import xlsxwriter
 
 
-def integerizer(soup):
-    soup = soup.strip('$')
-    return int(soup.replace(',', ''))
-
+# TODO
+# Make script runnable from any directory
 
 def main():
-    # savings_df.loc[4] == total_df.loc[4]
-    savings_df = pd.read_table("../files/contracts_savings.txt")
-    total_df = pd.read_table("../files/contracts_total_value.txt")
+    start_time = datetime.now()
+    print("Beginning doge data dump...")
+    contracts_500 = requests.get(
+        "https://api.doge.gov/savings/contracts?page=1&per_page=500").json()  # can also do .text and .content
+    # contracts_500['meta']  # {'total_results': 10248, 'pages': 22}
+    # contracts_500['meta']['pages']  # 22
 
-    # integerize THIS!
-    total_df["Value"] = total_df["Value"].apply(integerizer)
-    savings_df["Saved"] = savings_df["Saved"].apply(integerizer)
+    # grants: https://api.doge.gov/savings/grants?page=1&per_page=500
+    # leases: https://api.doge.gov/savings/leases?page=1&per_page=500
+    # payments: 'https://api.doge.gov/payments?page=1&per_page=500'
+    # payment statistics: 'https://api.doge.gov/payments/statistics'
 
-    # Total Value: The potential expenditure (with options).
-    # Savings: Total value - current obligation
-    obbies = total_df["Value"] - savings_df["Saved"]
-    
-    # so hows about we actually read this data
-    super_df = pd.concat([total_df, savings_df["Saved"]], axis=1)
-    super_df = pd.concat([super_df, obbies], axis=1)
-    super_df.to_csv("../files/super_doge.csv", index=False)
-    print("Savings: Total value - current obligation")
-    print("Total Value: The potential expenditure (with options).")
+    grants_500 = requests.get('https://api.doge.gov/savings/grants?page=1&per_page=500').json()
+    leases_500 = requests.get('https://api.doge.gov/savings/leases?page=1&per_page=500').json()
+    payments_500 = requests.get('https://api.doge.gov/payments?page=1&per_page=500').json()
+    # no params, just returns number of payments made by agency
+    pmt_stats = requests.get('https://api.doge.gov/payments/statistics').json()
+
+    cpage = 1
+    cbin = []  # bin of jsons. jsons, once existing, go into the bin.
+    while cpage <= contracts_500['meta']['pages']:
+        bin_json = requests.get(f"https://api.doge.gov/savings/contracts?&page={cpage}&per_page=500").json()
+        cbin.append(pd.DataFrame.from_records(bin_json['result']['contracts']))
+        cpage += 1
+
+    contract_bin_df = pd.concat(cbin)
+
+    gpage = 1
+    gbin = []
+    while gpage <= grants_500['meta']['pages']:
+        bin_json = requests.get(f"https://api.doge.gov/savings/grants?page={gpage}&per_page=500").json()
+        gbin.append(pd.DataFrame.from_records(bin_json['result']['grants']))
+        gpage += 1
+
+    grant_bin_df = pd.concat(gbin)
+
+    lpage = 1
+    lbin = []
+    while lpage <= leases_500['meta']['pages']:
+        bin_json = requests.get(f"https://api.doge.gov/savings/leases?&page={lpage}&per_page=500").json()
+        lbin.append(pd.DataFrame.from_records(bin_json['result']['leases']))
+        lpage += 1
+
+    lease_bin_df = pd.concat(lbin)
+
+    ppage = 1
+    pbin = []
+    pmt_processing_start_time = datetime.now()
+    print("Beginning to process payments. This may take a while...")
+    while ppage <= payments_500['meta']['pages']:  # 215 pages
+        res = requests.get(f"https://api.doge.gov/payments?page={ppage}&per_page=500").json()
+        # res_json = res['result']['payments'].json()
+        for payment in res['result']['payments']:
+            # because not passing an index it breaks so we wrap the dict in a list and call it like an idiot
+            df = pd.DataFrame([payment])
+            pbin.append(df)
+        ppage += 1
+
+    payments_bin_df = pd.concat(pbin)
+
+    pmt_result = pmt_stats['result']
+    lob = []  # list of dfs its a list with df's in it its name is LOB
+    for res in pmt_result:
+        res_df = pd.DataFrame.from_records(pmt_result[f'{res}'])
+        lob.append(res_df)
+
+    # just putting the random shit they compiled onto one df
+    squab = pd.concat(lob, axis=1)
+    squab.insert(2, '', '')
+    squab.insert(5, 'blank', '')
+    squab.columns = ['agency_name', 'count', '', 'date', 'count', '', 'orgn_name', 'count']
+    print(f"Payment processing time: {datetime.now() - pmt_processing_start_time}")
+
+    # '05-27-2025'
+    with pd.ExcelWriter(f'files/doge_data_dump_{datetime.today().strftime('%m-%d-%Y')}.xlsx',
+                        engine='xlsxwriter') as writer:
+        contract_bin_df.to_excel(writer, sheet_name='Contracts', index=False)
+        grant_bin_df.to_excel(writer, sheet_name=f'Grants', index=False)
+        lease_bin_df.to_excel(writer, sheet_name=f'Leases', index=False)
+        payments_bin_df.to_excel(writer, sheet_name=f'Payments', index=False)
+        squab.to_excel(writer, sheet_name=f'Payment Statistics', index=False)
+
+        # column widths courtesy of xlsxwriter.autofit()
+        for sheet in writer.sheets:
+            worksheet = writer.sheets[sheet]
+            worksheet.autofit()
+
+    print(f'Total Execution Time: {datetime.now() - start_time}')
 
 
 if __name__ == "__main__":
