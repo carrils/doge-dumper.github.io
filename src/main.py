@@ -1,4 +1,4 @@
-#!/usr/local/bin/python
+#!/usr/local/bin/python3
 
 import csv
 import json
@@ -11,8 +11,12 @@ import requests
 import xlsxwriter
 
 
+# TODO
+# Make script runnable from any directory
+
 def main():
     start_time = datetime.now()
+    print("Beginning doge data dump...")
     contracts_500 = requests.get(
         "https://api.doge.gov/savings/contracts?page=1&per_page=500").json()  # can also do .text and .content
     # contracts_500['meta']  # {'total_results': 10248, 'pages': 22}
@@ -58,6 +62,8 @@ def main():
 
     ppage = 1
     pbin = []
+    pmt_processing_start_time = datetime.now()
+    print("Beginning to process payments. This may take a while...")
     while ppage <= payments_500['meta']['pages']:  # 215 pages
         res = requests.get(f"https://api.doge.gov/payments?page={ppage}&per_page=500").json()
         # res_json = res['result']['payments'].json()
@@ -80,9 +86,10 @@ def main():
     squab.insert(2, '', '')
     squab.insert(5, 'blank', '')
     squab.columns = ['agency_name', 'count', '', 'date', 'count', '', 'orgn_name', 'count']
+    print(f"Payment processing time: {datetime.now() - pmt_processing_start_time}")
 
     # '05-27-2025'
-    with pd.ExcelWriter(f'../files/doge_data_dump_{datetime.today().strftime('%m-%d-%Y')}.xlsx',
+    with pd.ExcelWriter(f'files/doge_data_dump_{datetime.today().strftime('%m-%d-%Y')}.xlsx',
                         engine='xlsxwriter') as writer:
         contract_bin_df.to_excel(writer, sheet_name='Contracts', index=False)
         grant_bin_df.to_excel(writer, sheet_name=f'Grants', index=False)
@@ -95,7 +102,7 @@ def main():
             worksheet = writer.sheets[sheet]
             worksheet.autofit()
 
-    print(f'Time: {datetime.now() - start_time}')
+    print(f'Total Execution Time: {datetime.now() - start_time}')
 
 
 if __name__ == "__main__":
