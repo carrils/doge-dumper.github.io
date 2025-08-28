@@ -9,62 +9,89 @@ import glob
 import os
 import requests
 import xlsxwriter
+import numpy as np
 
 
 # TODO
 # Make script runnable from any directory
+# need to add up:
+# 	contract
+# 	lease
+# 	grant
+# 	payment
+
+def soupcans():
+    df = pd.DataFrame(
+        {
+            "A": ["foo", "bar", "foo", "bar", "foo", "bar", "foo", "foo"],
+            "B": ["one", "one", "two", "three", "two", "two", "one", "three"],
+            "C": np.random.randn(8),
+            "D": np.random.randn(8),
+        }
+    )
+    # Grouping by a column label, selecting column labels,
+    # and then applying the 'DataFrameGroupBy.sum()' function to the resulting groups.
+    # experimental code to sum totals for an agency or contract or whatever.
+    df.groupby("agency/contract/identifying info/ID")[["C", "D"]].sum()
+
 
 def main():
     start_time = datetime.now()
     print("Beginning doge data dump...")
-    contracts_500 = requests.get(
-        "https://api.doge.gov/savings/contracts?page=1&per_page=500").json()  # can also do .text and .content
-    # contracts_500['meta']  # {'total_results': 10248, 'pages': 22}
-    # contracts_500['meta']['pages']  # 22
+    contracts_meta = requests.get('https://api.doge.gov/savings/contracts?page=1&per_page=500').json()  # can also do .text and .content
+    # contracts_meta['meta']  # {'total_results': 10248, 'pages': 22}
+    # contracts_meta['meta']['pages']  # 22
 
     # grants: https://api.doge.gov/savings/grants?page=1&per_page=500
     # leases: https://api.doge.gov/savings/leases?page=1&per_page=500
-    # payments: 'https://api.doge.gov/payments?page=1&per_page=500'
-    # payment statistics: 'https://api.doge.gov/payments/statistics'
+    # payments: https://api.doge.gov/payments?page=1&per_page=500
+    # payment statistics: https://api.doge.gov/payments/statistics
 
-    grants_500 = requests.get('https://api.doge.gov/savings/grants?page=1&per_page=500').json()
-    leases_500 = requests.get('https://api.doge.gov/savings/leases?page=1&per_page=500').json()
-    payments_500 = requests.get('https://api.doge.gov/payments?page=1&per_page=500').json()
+    grants_meta = requests.get('https://api.doge.gov/savings/grants?page=1&per_page=500').json()
+    leases_meta = requests.get('https://api.doge.gov/savings/leases?page=1&per_page=500').json()
+    payments_meta = requests.get('https://api.doge.gov/payments?page=1&per_page=500').json()
     # no params, just returns number of payments made by agency
     pmt_stats = requests.get('https://api.doge.gov/payments/statistics').json()
 
     cpage = 1
     cbin = []  # bin of jsons. jsons, once existing, go into the bin.
-    while cpage <= contracts_500['meta']['pages']:
+    while cpage <= contracts_meta['meta']['pages']:
         bin_json = requests.get(f"https://api.doge.gov/savings/contracts?&page={cpage}&per_page=500").json()
         cbin.append(pd.DataFrame.from_records(bin_json['result']['contracts']))
         cpage += 1
 
-    contract_bin_df = pd.concat(cbin)
+    contract_bin_df = pd.concat(cbin)  # index starts at 0, goes to 500 then loops back to 0 for all rows
+    contract_bin_df.reset_index(drop=True, inplace=True)
+    duplicate_rows_contracts = contract_bin_df[contract_bin_df.duplicated()]  # all USAID contracts.
+    contracts_by_agency = contract_bin_df.groupby("agency")  # group by agency
+    # contracts_by_agency = contract_bin_df.groupby("agency").agg({'savings': 'sum', 'value': 'sum'})
+    contracts_by_agency.agg({'savings': 'sum', 'value': 'sum'})  # functions on cols
 
     gpage = 1
     gbin = []
-    while gpage <= grants_500['meta']['pages']:
+    while gpage <= grants_meta['meta']['pages']:
         bin_json = requests.get(f"https://api.doge.gov/savings/grants?page={gpage}&per_page=500").json()
         gbin.append(pd.DataFrame.from_records(bin_json['result']['grants']))
         gpage += 1
 
     grant_bin_df = pd.concat(gbin)
+    grant_bin_df.reset_index(drop=True, inplace=True)
 
     lpage = 1
     lbin = []
-    while lpage <= leases_500['meta']['pages']:
+    while lpage <= leases_meta['meta']['pages']:
         bin_json = requests.get(f"https://api.doge.gov/savings/leases?&page={lpage}&per_page=500").json()
         lbin.append(pd.DataFrame.from_records(bin_json['result']['leases']))
         lpage += 1
 
     lease_bin_df = pd.concat(lbin)
+    lease_bin_df.reset_index(drop=True, inplace=True)
 
     ppage = 1
     pbin = []
     pmt_processing_start_time = datetime.now()
     print("Beginning to process payments. This may take a while...")
-    while ppage <= payments_500['meta']['pages']:  # 215 pages
+    while ppage <= payments_meta['meta']['pages']:  # 215 pages
         res = requests.get(f"https://api.doge.gov/payments?page={ppage}&per_page=500").json()
         # res_json = res['result']['payments'].json()
         for payment in res['result']['payments']:
@@ -74,6 +101,7 @@ def main():
         ppage += 1
 
     payments_bin_df = pd.concat(pbin)
+    payments_bin_df.reset_index(drop=True, inplace=True)
 
     pmt_result = pmt_stats['result']
     lob = []  # list of dfs its a list with df's in it its name is LOB
