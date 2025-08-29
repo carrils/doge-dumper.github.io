@@ -1,0 +1,598 @@
+{
+  "agencies": [
+    {
+      "name": "Department of Agriculture",
+      "children": [
+        {
+          "name": "Agricultural Marketing Service"
+        },
+        {
+          "name": "Agricultural Research Service"
+        },
+        {
+          "name": "Animal and Plant Health Inspection Service"
+        },
+        {
+          "name": "Commodity Credit Corporation"
+        },
+        {
+          "name": "Economic Research Service"
+        },
+        {
+          "name": "Farm Service Agency"
+        },
+        {
+          "name": "Federal Crop Insurance Corporation"
+        },
+        {
+          "name": "Food and Nutrition Service"
+        },
+        {
+          "name": "Food Safety and Inspection Service"
+        },
+        {
+          "name": "Foreign Agricultural Service"
+        },
+        {
+          "name": "Forest Service"
+        },
+        {
+          "name": "National Agricultural Statistics Service"
+        },
+        {
+          "name": "National Institute of Food and Agriculture"
+        },
+        {
+          "name": "Natural Resources Conservation Service"
+        },
+        {
+          "name": "Office of Advocacy and Outreach"
+        },
+        {
+          "name": "Office of Chief Financial Officer"
+        },
+        {
+          "name": "Office of Energy Policy and New Uses"
+        },
+        {
+          "name": "Office of Environmental Quality"
+        },
+        {
+          "name": "Office of Information Resources Management"
+        },
+        {
+          "name": "Office of Inspector General"
+        },
+        {
+          "name": "Office of Operations"
+        },
+        {
+          "name": "Office of Procurement and Property Management"
+        },
+        {
+          "name": "Office of Secretary of Agriculture"
+        },
+        {
+          "name": "Office of Transportation"
+        },
+        {
+          "name": "Rural Business-Cooperative Service"
+        },
+        {
+          "name": "Rural Housing Service"
+        },
+        {
+          "name": "Rural Utilities Service"
+        },
+        {
+          "name": "World Agricultural Outlook Board"
+        }
+      ]
+    },
+    {
+      "name": "Department of Commerce",
+      "children": [
+        {
+          "name": "Bureau of Census"
+        },
+        {
+          "name": "Bureau of Economic Analysis"
+        },
+        {
+          "name": "Bureau of Industry and Security"
+        },
+        {
+          "name": "Economic Development Administration"
+        },
+        {
+          "name": "Foreign-Trade Zones Board"
+        },
+        {
+          "name": "International Trade Administration"
+        },
+        {
+          "name": "Minority Business Development Agency"
+        },
+        {
+          "name": "National Institute of Standards and Technology"
+        },
+        {
+          "name": "National Oceanic and Atmospheric Administration"
+        },
+        {
+          "name": "National Oceanic and Atmospheric Administration National Marine Fisheries Service"
+        },
+        {
+          "name": "National Technical Information Service"
+        },
+        {
+          "name": "National Telecommunications and Information Administration"
+        },
+        {
+          "name": "Office of Secretary of Commerce"
+        },
+        {
+          "name": "Office of Under-Secretary for Economic Affairs"
+        },
+        {
+          "name": "United States Patent and Trademark Office"
+        }
+      ]
+    },
+    {
+      "name": "Department of Defense",
+      "children": [
+        {
+          "name": "Army Corps of Engineers"
+        },
+        {
+          "name": "Defense Acquisition Regulations System"
+        },
+        {
+          "name": "Defense Logistics Agency"
+        },
+        {
+          "name": "Department of Navy Acquisition Regulations"
+        },
+        {
+          "name": "National Geospatial-Intelligence Agency"
+        },
+        {
+          "name": "Office of the Secretary"
+        }
+      ]
+    },
+    {
+      "name": "Department of Education",
+      "children": [
+        {
+          "name": "Department of Education Acquisition Regulation"
+        },
+        {
+          "name": "Office for Civil Rights"
+        },
+        {
+          "name": "Office of and Adult Education Technical Career"
+        },
+        {
+          "name": "Office of Bilingual Education and Minority Languages Affairs"
+        },
+        {
+          "name": "Office of Elementary and Secondary Education"
+        },
+        {
+          "name": "Office of Postsecondary Education"
+        },
+        {
+          "name": "Office of Secretary of Education"
+        },
+        {
+          "name": "Office of Special Education and Rehabilitative Services"
+        }
+      ]
+    },
+    {
+      "name": "Department of Energy",
+      "children": [
+        {
+          "name": "Federal Energy Regulatory Commission"
+        }
+      ]
+    },
+    {
+      "name": "Executive Office of the President",
+      "children": [
+        {
+          "name": "Council on Environmental Quality"
+        },
+        {
+          "name": "National Security Council"
+        },
+        {
+          "name": "Office of Science and Technology Policy"
+        },
+        {
+          "name": "Office of the Intellectual Property Enforcement Coordinator"
+        }
+      ]
+    },
+    {
+      "name": "Federal Labor Relations Authority",
+      "children": [
+        {
+          "name": "Federal Service Impasses Panel "
+        },
+        {
+          "name": "General Counsel of the Federal Labor Relations Authority"
+        }
+      ]
+    },
+    {
+      "name": "Federal Reserve System",
+      "children": [
+        {
+          "name": "Board of Governors of the Federal Reserve System"
+        }
+      ]
+    },
+    {
+      "name": "General Services Administration",
+      "children": [
+        {
+          "name": "Civilian Board of Contract Appeals"
+        }
+      ]
+    },
+    {
+      "name": "Department of Health and Human Services",
+      "children": [
+        {
+          "name": "Administration for Children and Families"
+        },
+        {
+          "name": "Centers for Medicare & Medicaid Services"
+        },
+        {
+          "name": "Food and Drug Administration"
+        },
+        {
+          "name": "Indian Health Service"
+        },
+        {
+          "name": "Office of Administration for Children and Families Child Support Enforcement (Child Support Enforcement Program)"
+        },
+        {
+          "name": "Office of Administration for Children and Families Community Services"
+        },
+        {
+          "name": "Office of Administration for Children and Families Family Assistance (Assistance Programs)"
+        },
+        {
+          "name": "Office of Administration for Children and Families Refugee Resettlement"
+        },
+        {
+          "name": "Office of Inspector General-Health Care"
+        },
+        {
+          "name": "Public Health Service"
+        }
+      ]
+    },
+    {
+      "name": "Department of Homeland Security",
+      "children": [
+        {
+          "name": "Coast Guard"
+        },
+        {
+          "name": "Coast Guard (Great Lakes Pilotage)"
+        },
+        {
+          "name": "Department of Homeland Security Acquisition Regulation"
+        },
+        {
+          "name": "Federal Emergency Management Agency"
+        },
+        {
+          "name": "Federal Law Enforcement Training Center"
+        },
+        {
+          "name": "Human Resources Management System (Homeland Security - Office of Personnel Management)"
+        },
+        {
+          "name": "Office of the Secretary of Homeland Security"
+        },
+        {
+          "name": "Secret Service"
+        },
+        {
+          "name": "Transportation Security Administration"
+        },
+        {
+          "name": "U.S. Customs and Border Protection"
+        }
+      ]
+    },
+    {
+      "name": "Department of Housing and Urban Development",
+      "children": [
+        {
+          "name": "Government National Mortgage Association"
+        },
+        {
+          "name": "Office of Assistant Secretary for Community Planning and Development"
+        },
+        {
+          "name": "Office of Assistant Secretary for Equal Opportunity"
+        },
+        {
+          "name": "Office of Assistant Secretary for Housing - Federal Housing Commissioner"
+        },
+        {
+          "name": "Office of Assistant Secretary for Public and Indian Housing"
+        },
+        {
+          "name": "Office of Federal Housing Enterprise Oversight"
+        },
+        {
+          "name": "Office of Housing and Multifamily Housing Assistance Restructuring"
+        },
+        {
+          "name": "Office of Inspector General, Housing and Urban Development"
+        },
+        {
+          "name": "Office of Secretary"
+        },
+        {
+          "name": "Office of Secretary (Housing Assistance Programs and Public and Indian Housing Programs)"
+        }
+      ]
+    },
+    {
+      "name": "Department of Interior",
+      "children": [
+        {
+          "name": "Bureau of Indian Affairs"
+        },
+        {
+          "name": "Bureau of Land Management"
+        },
+        {
+          "name": "Bureau of Ocean Energy Management"
+        },
+        {
+          "name": "Bureau of Reclamation"
+        },
+        {
+          "name": "Bureau of Safety and Environmental Enforcement"
+        },
+        {
+          "name": "Geological Survey"
+        },
+        {
+          "name": "Indian Arts and Crafts Board"
+        },
+        {
+          "name": "National Indian Gaming Commission"
+        },
+        {
+          "name": "National Park Service"
+        },
+        {
+          "name": "Office of Indian Affairs Assistant Secretary"
+        },
+        {
+          "name": "Office of Natural Resources Revenue"
+        },
+        {
+          "name": "Office of Secretary of the Interior"
+        },
+        {
+          "name": "Office of Special Trustee for American Indians"
+        },
+        {
+          "name": "Office of Surface Mining Reclamation and Enforcement"
+        },
+        {
+          "name": "United States Fish and Wildlife Service"
+        }
+      ]
+    },
+    {
+      "name": "Department of Justice",
+      "children": [
+        {
+          "name": "Bureau of Alcohol, Tobacco, Firearms, and Explosives"
+        },
+        {
+          "name": "Bureau of Prisons"
+        },
+        {
+          "name": "Drug Enforcement Administration"
+        },
+        {
+          "name": "Executive Office for Immigration Review"
+        },
+        {
+          "name": "Federal Prison Industries"
+        },
+        {
+          "name": "Foreign Claims Settlement Commission of the United States"
+        },
+        {
+          "name": "Offices of Independent Counsel"
+        }
+      ]
+    },
+    {
+      "name": "Department of Labor",
+      "children": [
+        {
+          "name": "Benefits Review Board"
+        },
+        {
+          "name": "Employee Benefits Security Administration"
+        },
+        {
+          "name": "Employees' Compensation Appeals Board"
+        },
+        {
+          "name": "Employment and Training Administration"
+        },
+        {
+          "name": "Mine Safety and Health Administration"
+        },
+        {
+          "name": "Occupational Safety and Health Administration"
+        },
+        {
+          "name": "Office of Assistant Secretary for Veterans' Employment and Training Service"
+        },
+        {
+          "name": "Office of Federal Contract Compliance Programs"
+        },
+        {
+          "name": "Office of Labor-Management Standards"
+        },
+        {
+          "name": "Office of Secretary of Labor"
+        },
+        {
+          "name": "Office of Workers' Compensation Programs"
+        },
+        {
+          "name": "Wage and Hour Division"
+        }
+      ]
+    },
+    {
+      "name": "Library of Congress",
+      "children": [
+        {
+          "name": "Copyright Royalty Board"
+        },
+        {
+          "name": "U.S. Copyright Office"
+        }
+      ]
+    },
+    {
+      "name": "Office of Management and Budget",
+      "children": [
+        {
+          "name": "Office of Federal Procurement Policy"
+        }
+      ]
+    },
+    {
+      "name": "National Archives and Records Administration",
+      "children": [
+        {
+          "name": "Information Security Oversight Office"
+        },
+        {
+          "name": "Office of Federal Register"
+        }
+      ]
+    },
+    {
+      "name": "National Foundation on the Arts and the Humanities",
+      "children": [
+        {
+          "name": "Institute of Museum and Library Services"
+        },
+        {
+          "name": "National Endowment for the Arts"
+        },
+        {
+          "name": "National Endowment for the Humanities"
+        }
+      ]
+    },
+    {
+      "name": "Department of Transportation",
+      "children": [
+        {
+          "name": "Federal Aviation Administration"
+        },
+        {
+          "name": "Federal Aviation Administration Commercial Space Transportation"
+        },
+        {
+          "name": "Federal Highway Administration"
+        },
+        {
+          "name": "Federal Motor Carrier Safety Administration"
+        },
+        {
+          "name": "Federal Railroad Administration"
+        },
+        {
+          "name": "Federal Transit Administration"
+        },
+        {
+          "name": "Great Lakes St. Lawrence Seaway Development Corporation"
+        },
+        {
+          "name": "Maritime Administration"
+        },
+        {
+          "name": "National Highway Traffic Safety Administration"
+        },
+        {
+          "name": "Office of Secretary (Aviation Proceedings)"
+        },
+        {
+          "name": "Office of Secretary of Transportation"
+        },
+        {
+          "name": "Pipeline and Hazardous Materials Safety Administration"
+        }
+      ]
+    },
+    {
+      "name": "Department of Treasury",
+      "children": [
+        {
+          "name": "Alcohol and Tobacco Tax and Trade Bureau"
+        },
+        {
+          "name": "Bureau of Engraving and Printing"
+        },
+        {
+          "name": "Bureau of the Fiscal Service"
+        },
+        {
+          "name": "Community Development Financial Institutions Fund"
+        },
+        {
+          "name": "Comptroller of the Currency"
+        },
+        {
+          "name": "Financial Crimes Enforcement Network"
+        },
+        {
+          "name": "Fiscal Service"
+        },
+        {
+          "name": "Internal Revenue Service"
+        },
+        {
+          "name": "Monetary Offices"
+        },
+        {
+          "name": "Office of Financial Research"
+        },
+        {
+          "name": "Office of Foreign Assets Control"
+        },
+        {
+          "name": "Office of Investment Security"
+        },
+        {
+          "name": "Office of Secretary of the Treasury"
+        }
+      ]
+    }
+  ]
+}
