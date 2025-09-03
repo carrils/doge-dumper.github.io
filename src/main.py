@@ -11,6 +11,8 @@ import requests
 import xlsxwriter
 import numpy as np
 
+from src.scrap import hierarchy
+
 
 # TODO
 # Make script runnable from any directory
@@ -62,11 +64,33 @@ def main():
 
     contract_bin_df = pd.concat(cbin)  # index starts at 0, goes to 500 then loops back to 0 for all rows
     contract_bin_df.reset_index(drop=True, inplace=True)
+    # [ ---- visualization ---- ]
     duplicate_rows_contracts = contract_bin_df[contract_bin_df.duplicated()]  # all USAID contracts.
-    contracts_by_agency = contract_bin_df.groupby("agency")  # group by agency
-    # contracts_by_agency = contract_bin_df.groupby("agency").agg({'savings': 'sum', 'value': 'sum'})
-    contracts_by_agency.agg({'savings': 'sum', 'value': 'sum'})  # functions on cols
+    # group by agency name and perform agg functions on savings and value columns
+    contracts_by_agency = contract_bin_df.groupby("agency").agg({'savings': 'sum', 'value': 'sum'})
 
+    # [ --- 09.02.25 --- ]
+    hierarchy = pd.read_json('hierarchy.json')
+    for agency in hierarchy.itertuples():
+        # check for parent agency contracts
+        for t_agency in contracts_by_agency.itertuples():
+            # Pandas(Index=63, agency='United States Trade and Development Agency', savings=415391.0, value=1813720.34)
+            if t_agency.agency == agency.name:
+                print(f'big dawg {agency.name}: \t{t_agency.savings}')
+        # for child in agency.children:
+        #     print(f'\t{child['name']}')
+        # check for child agency contracts and add them to parent contracts. a "sort".
+
+
+
+
+
+
+
+
+
+
+    # [ --- 09.02.25 --- ]
     gpage = 1
     gbin = []
     while gpage <= grants_meta['meta']['pages']:
@@ -131,6 +155,10 @@ def main():
             worksheet.autofit()
 
     print(f'Total Execution Time: {datetime.now() - start_time}')
+
+    def has_children(row):
+        if row:
+            # return any(row.values())
 
 
 if __name__ == "__main__":
