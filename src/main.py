@@ -22,20 +22,6 @@ from src.scrap import hierarchy
 # 	grant
 # 	payment
 
-def soupcans():
-    df = pd.DataFrame(
-        {
-            "A": ["foo", "bar", "foo", "bar", "foo", "bar", "foo", "foo"],
-            "B": ["one", "one", "two", "three", "two", "two", "one", "three"],
-            "C": np.random.randn(8),
-            "D": np.random.randn(8),
-        }
-    )
-    # Grouping by a column label, selecting column labels,
-    # and then applying the 'DataFrameGroupBy.sum()' function to the resulting groups.
-    # experimental code to sum totals for an agency or contract or whatever.
-    df.groupby("agency/contract/identifying info/ID")[["C", "D"]].sum()
-
 
 def main():
     start_time = datetime.now()
@@ -116,14 +102,14 @@ def main():
 
     # [ ---- visualization ---- ]
     duplicate_rows_contracts = contract_bin_df[contract_bin_df.duplicated()]  # all USAID contracts.
-
     # group by agency name and perform agg functions on savings and value columns
     # aka sum the contract savings and value for each agency
     contracts_by_agency = contract_bin_df.groupby("agency").agg({'savings': 'sum', 'value': 'sum'})
-
     # find the fattest of cats and sum savings and value of their contracts
     contracting_fatcats = contract_bin_df.groupby("vendor").agg({'savings': 'sum', 'value': 'sum'})
-
+    contract_bin_df['savings'].agg('sum')  # 58354585573.83
+    grant_bin_df['savings'].agg('sum')  # 43775935185
+    lease_bin_df['savings'].agg('sum')  # 139708550
 
     # [Printing] Format: '05-27-2025'
     with pd.ExcelWriter(f'files/doge_data_dump_{datetime.today().strftime('%m-%d-%Y')}.xlsx',
