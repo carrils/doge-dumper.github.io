@@ -11,8 +11,6 @@ import requests
 import xlsxwriter
 import numpy as np
 
-from src.scrap import hierarchy
-
 
 # TODO
 # Make script runnable from any directory

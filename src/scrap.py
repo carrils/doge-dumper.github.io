@@ -11,9 +11,9 @@ import requests
 import xlsxwriter
 import numpy as np
 
-agencies = pd.read_json('agencies.json')
-hierarchy = pd.read_json('hierarchy.json')
-contracts = pd.read_json('contracts_08-27-25.json')
+agencies = pd.read_json('tmp/data/agencies.json')
+hierarchy = pd.read_json('tmp/data/hierarchy.json')
+contracts = pd.read_json('tmp/data/contracts_08-27-25.json')
 # hierarchy = hierarchy.set_index('name')
 
 
