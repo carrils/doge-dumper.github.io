@@ -11,6 +11,9 @@ import requests
 import xlsxwriter
 import numpy as np
 
+from dash import Dash, html, dcc, callback, Output, Input
+import plotly.express as px
+import dash_ag_grid as dag  # idk if i need this beyond the example
 
 # TODO
 # Make script runnable from any directory
@@ -124,6 +127,32 @@ def main():
             worksheet.autofit()
 
     print(f'Total Execution Time: {datetime.now() - start_time}')
+
+    # Initialize the app
+    app = Dash()
+    # App layout
+    app.layout = [
+        html.Div(children='My First App with Data, Graph, and Controls'),
+        html.Hr(),
+        dcc.RadioItems(options=['pop', 'lifeExp', 'gdpPercap'], value='lifeExp', id='my-final-radio-item-example'),
+        dag.AgGrid(
+            rowData=df.to_dict('records'),
+            columnDefs=[{"field": i} for i in df.columns]
+        ),
+        dcc.Graph(figure={}, id='my-final-graph-example')
+    ]
+
+    # Add controls to build the interaction
+    @callback(
+        Output(component_id='my-final-graph-example', component_property='figure'),
+        Input(component_id='my-final-radio-item-example', component_property='value')
+    )
+    def update_graph(col_chosen):
+        fig = px.histogram(df, x='continent', y=col_chosen, histfunc='avg')
+        return fig
+
+    # Run the app
+    app.run(debug=True)
 
 
 if __name__ == "__main__":
