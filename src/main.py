@@ -10,19 +10,17 @@ import os
 import requests
 import xlsxwriter
 import numpy as np
-
+# plotly dash reqs
 from dash import Dash, html, dcc, callback, Output, Input
 import plotly.express as px
-import dash_ag_grid as dag  # idk if i need this beyond the example
+import dash_ag_grid as dag
 
-# TODO
-# Make script runnable from any directory
-# need to add up:
-# 	contract
-# 	lease
-# 	grant
-# 	payment
 
+# ToDo:
+# add grants, leases, and payments tables to dash dashboard (hehe xd)
+# graphs for contracts, grants, leases, and payments (temporal?)
+# callback controls that make sense and are useful
+# reduce compilation time. maybe switch to docker? 
 
 def main():
     start_time = datetime.now()
@@ -31,10 +29,6 @@ def main():
     # contracts_meta['meta']  # {'total_results': 10248, 'pages': 22}
     # contracts_meta['meta']['pages']  # 22
 
-    # grants: https://api.doge.gov/savings/grants?page=1&per_page=500
-    # leases: https://api.doge.gov/savings/leases?page=1&per_page=500
-    # payments: https://api.doge.gov/payments?page=1&per_page=500
-    # payment statistics: https://api.doge.gov/payments/statistics
 
     grants_meta = requests.get('https://api.doge.gov/savings/grants?page=1&per_page=500').json()
     leases_meta = requests.get('https://api.doge.gov/savings/leases?page=1&per_page=500').json()
@@ -74,7 +68,6 @@ def main():
 
     ppage = 1
     pbin = []
-    pmt_processing_start_time = datetime.now()
     print("Beginning to process payments. This may take a while...")
     while ppage <= payments_meta['meta']['pages']:  # 215 pages
         res = requests.get(f"https://api.doge.gov/payments?page={ppage}&per_page=500").json()
@@ -99,47 +92,19 @@ def main():
     squab.insert(2, '', '')
     squab.insert(5, 'blank', '')
     squab.columns = ['agency_name', 'count', '', 'date', 'count', '', 'orgn_name', 'count']
-    print(f"Payment processing time: {datetime.now() - pmt_processing_start_time}")
-
-    # [ ---- visualization ---- ]
-    duplicate_rows_contracts = contract_bin_df[contract_bin_df.duplicated()]  # all USAID contracts.
-    # group by agency name and perform agg functions on savings and value columns
-    # aka sum the contract savings and value for each agency
-    contracts_by_agency = contract_bin_df.groupby("agency").agg({'savings': 'sum', 'value': 'sum'})
-    # find the fattest of cats and sum savings and value of their contracts
-    contracting_fatcats = contract_bin_df.groupby("vendor").agg({'savings': 'sum', 'value': 'sum'})
-    contract_bin_df['savings'].agg('sum')  # 58354585573.83
-    grant_bin_df['savings'].agg('sum')  # 43775935185
-    lease_bin_df['savings'].agg('sum')  # 139708550
-
-    # [Printing] Format: '05-27-2025'
-    with pd.ExcelWriter(f'files/doge_data_dump_{datetime.today().strftime('%m-%d-%Y')}.xlsx',
-                        engine='xlsxwriter') as writer:
-        contract_bin_df.to_excel(writer, sheet_name='Contracts', index=False)
-        grant_bin_df.to_excel(writer, sheet_name=f'Grants', index=False)
-        lease_bin_df.to_excel(writer, sheet_name=f'Leases', index=False)
-        payments_bin_df.to_excel(writer, sheet_name=f'Payments', index=False)
-        squab.to_excel(writer, sheet_name=f'Payment Statistics', index=False)
-
-        # column widths courtesy of xlsxwriter.autofit()
-        for sheet in writer.sheets:
-            worksheet = writer.sheets[sheet]
-            worksheet.autofit()
-
-    print(f'Total Execution Time: {datetime.now() - start_time}')
 
     # Initialize the app
     app = Dash()
     # App layout
     app.layout = [
-        html.Div(children='My First App with Data, Graph, and Controls'),
+        html.Div(children='contracts_bin_df'),
         html.Hr(),
         dcc.RadioItems(options=['pop', 'lifeExp', 'gdpPercap'], value='lifeExp', id='my-final-radio-item-example'),
+        dcc.Graph(figure=px.histogram(contract_bin_df, x='agency', y='value', histfunc='avg')),
         dag.AgGrid(
-            rowData=df.to_dict('records'),
-            columnDefs=[{"field": i} for i in df.columns]
-        ),
-        dcc.Graph(figure={}, id='my-final-graph-example')
+            rowData=contract_bin_df.to_dict('records'),
+            columnDefs=[{"field": i} for i in contract_bin_df.columns]
+        )
     ]
 
     # Add controls to build the interaction
@@ -148,7 +113,7 @@ def main():
         Input(component_id='my-final-radio-item-example', component_property='value')
     )
     def update_graph(col_chosen):
-        fig = px.histogram(df, x='continent', y=col_chosen, histfunc='avg')
+        fig = px.histogram(contract_bin_df, x='agency_name', y=col_chosen, histfunc='avg')
         return fig
 
     # Run the app
