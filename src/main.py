@@ -20,7 +20,7 @@ import dash_ag_grid as dag
 # add grants, leases, and payments tables to dash dashboard (hehe xd)
 # graphs for contracts, grants, leases, and payments (temporal?)
 # callback controls that make sense and are useful
-# reduce compilation time. maybe switch to docker? 
+# reduce compilation time. maybe switch to docker?
 
 def main():
     start_time = datetime.now()
@@ -97,13 +97,29 @@ def main():
     app = Dash()
     # App layout
     app.layout = [
-        html.Div(children='contracts_bin_df'),
+        html.Div(children='Contracts'),
         html.Hr(),
         dcc.RadioItems(options=['pop', 'lifeExp', 'gdpPercap'], value='lifeExp', id='my-final-radio-item-example'),
-        dcc.Graph(figure=px.histogram(contract_bin_df, x='agency', y='value', histfunc='avg')),
+        # dcc.Graph(figure=px.histogram(contract_bin_df, x='agency', y='value', histfunc='avg')),
+        # payments
         dag.AgGrid(
             rowData=contract_bin_df.to_dict('records'),
             columnDefs=[{"field": i} for i in contract_bin_df.columns]
+        ),
+        html.Div(children='Grants'),
+        dag.AgGrid(
+            rowData=grant_bin_df.to_dict('records'),
+            columnDefs=[{"field": i} for i in grant_bin_df.columns]
+        ),
+        html.Div(children='Leases'),
+        dag.AgGrid(
+            rowData=lease_bin_df.to_dict('records'),
+            columnDefs=[{"field": i} for i in lease_bin_df.columns]
+        ),
+        html.Div(children='payments'),
+        dag.AgGrid(
+            rowData=squab.to_dict('records'),
+            columnDefs=[{"field": i} for i in squab.columns]
         )
     ]
 
