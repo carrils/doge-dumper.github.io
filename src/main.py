@@ -18,9 +18,10 @@ import dash_ag_grid as dag
 
 # ToDo:
 # graphs for contracts, grants, leases, and payments (temporal?)
-# callback controls that make sense and are useful
+# callback controls for import export
 # reduce compilation time. maybe switch to docker?
-# now that api dump is gone here we need to preserve that functionality somewhere.
+# preserve api dump functionality somewhere.
+
 
 def main():
     contract_bin_df = pd.read_json('tmp/data/contracts-3-30-26.json')
@@ -37,38 +38,39 @@ def main():
         # dcc.RadioItems(options=['pop', 'lifeExp', 'gdpPercap'], value='lifeExp', id='my-final-radio-item-example'),
         # dcc.Graph(figure=px.histogram(contract_bin_df, x='agency', y='value', histfunc='avg')),
         dag.AgGrid(
+            id="contracts-grid",
             rowData=contract_bin_df.to_dict('records'),
-            columnDefs=[{"field": i} for i in contract_bin_df.columns],  # single line fors because we wanna bully anyone bothering to read this
+            columnDefs=[{"field": i, 'filter': True} for i in contract_bin_df.columns],  # single line fors because we wanna bully anyone bothering to read this
             dashGridOptions={'pagination': True}
         ),
-        html.Div(children='Grants'),
-        dag.AgGrid(
-            rowData=grant_bin_df.to_dict('records'),
-            columnDefs=[{"field": i} for i in grant_bin_df.columns],
-            dashGridOptions={'pagination': True}
-        ),
-        html.Div(children='Leases'),
-        dag.AgGrid(
-            rowData=lease_bin_df.to_dict('records'),
-            columnDefs=[{"field": i} for i in lease_bin_df.columns],
-            dashGridOptions={'pagination': True}
-        ),
-        html.Div(children='payments'),
-        dag.AgGrid(
-            rowData=squab.to_dict('records'),
-            columnDefs=[{"field": i} for i in squab.columns],
-            dashGridOptions={'pagination': True}
-        )
+        # html.Div(children='Grants'),
+        # dag.AgGrid(
+        #     rowData=grant_bin_df.to_dict('records'),
+        #     columnDefs=[{"field": i} for i in grant_bin_df.columns],
+        #     dashGridOptions={'pagination': True}
+        # ),
+        # html.Div(children='Leases'),
+        # dag.AgGrid(
+        #     rowData=lease_bin_df.to_dict('records'),
+        #     columnDefs=[{"field": i} for i in lease_bin_df.columns],
+        #     dashGridOptions={'pagination': True}
+        # ),
+        # html.Div(children='payments'),
+        # dag.AgGrid(
+        #     rowData=squab.to_dict('records'),
+        #     columnDefs=[{"field": i} for i in squab.columns],
+        #     dashGridOptions={'pagination': True}
+        # )
     ]
 
-    # Add controls to build the interaction
-    @callback(
-        Output(component_id='my-final-graph-example', component_property='figure'),
-        Input(component_id='my-final-radio-item-example', component_property='value')
-    )
-    def update_graph(col_chosen):
-        fig = px.histogram(contract_bin_df, x='agency_name', y=col_chosen, histfunc='avg')
-        return fig
+    # https://dash.plotly.com/dash-ag-grid/getting-started > skip to section on callbacks
+    # @callback(
+    #     Output(component_id='my-final-graph-example', component_property='figure'),
+    #     Input(component_id='my-final-radio-item-example', component_property='value')
+    # )
+    # def update_graph(col_chosen):
+    #     fig = px.histogram(contract_bin_df, x='agency_name', y=col_chosen, histfunc='avg')
+    #     return fig
 
     # Run the app
     app.run(debug=True)
