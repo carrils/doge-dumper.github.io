@@ -10,8 +10,9 @@ import os
 import requests
 import xlsxwriter
 import numpy as np
+
 # plotly dash reqs
-from dash import Dash, html, dcc, callback, Output, Input
+from dash import Dash, dcc, html, Input, Output, callback
 import plotly.express as px
 import dash_ag_grid as dag
 
@@ -30,47 +31,66 @@ def main():
     squab = pd.read_json('tmp/data/payments-3-30-26.json')
     print('[ ---- AUTOBOT FUCKMODE ENGAGED (json loaded) ---- ]')
 
+    def generate_table(dataframe, max_rows=10):
+        return html.Table([
+            html.Thead(
+                html.Tr([html.Th(col) for col in dataframe.columns])
+            ),
+            html.Tbody([
+                html.Tr([
+                    html.Td(dataframe.iloc[i][col]) for col in dataframe.columns
+                ]) for i in range(min(len(dataframe), max_rows))
+            ])
+        ])
+
+
     app = Dash()
 
     app.layout = [
-        html.Div(children='Contracts'),
+        # generate_table(contract_bin_df),
+        html.H1(children='Contracts'),
         # html.Hr(),
         # dcc.RadioItems(options=['pop', 'lifeExp', 'gdpPercap'], value='lifeExp', id='my-final-radio-item-example'),
-        # dcc.Graph(figure=px.histogram(contract_bin_df, x='agency', y='value', histfunc='avg')),
+        # https://plotly.github.io/plotly.py-docs/generated/plotly.express.histogram.html
+        dcc.Graph(figure=px.histogram(contract_bin_df, x='agency', y='value', histfunc='sum')),
         dag.AgGrid(
             id="contracts-grid",
             rowData=contract_bin_df.to_dict('records'),
-            columnDefs=[{"field": i, 'filter': True} for i in contract_bin_df.columns],  # single line fors because we wanna bully anyone bothering to read this
-            dashGridOptions={'pagination': True}
+            columnDefs=[{"field": i, 'filter': True} for i in contract_bin_df.columns], # the {} parts in the next line make a dict, the rest of a list composition.
+            dashGridOptions={'pagination': True, 'theme': 'themeBalham'},
+            csvExportParams={
+                "fileName": f"doge_contracts_export_{datetime.today().strftime('%m-%d-%Y')}.csv",
+            }
         ),
-        # html.Div(children='Grants'),
-        # dag.AgGrid(
-        #     rowData=grant_bin_df.to_dict('records'),
-        #     columnDefs=[{"field": i} for i in grant_bin_df.columns],
-        #     dashGridOptions={'pagination': True}
-        # ),
-        # html.Div(children='Leases'),
-        # dag.AgGrid(
-        #     rowData=lease_bin_df.to_dict('records'),
-        #     columnDefs=[{"field": i} for i in lease_bin_df.columns],
-        #     dashGridOptions={'pagination': True}
-        # ),
-        # html.Div(children='payments'),
-        # dag.AgGrid(
-        #     rowData=squab.to_dict('records'),
-        #     columnDefs=[{"field": i} for i in squab.columns],
-        #     dashGridOptions={'pagination': True}
-        # )
+        html.Button("Download CSV", id="csv-button", n_clicks=0),
+        html.H1(children='Grants'),
+        dag.AgGrid(
+            rowData=grant_bin_df.to_dict('records'),
+            columnDefs=[{"field": i, 'filter': True} for i in grant_bin_df.columns],
+            dashGridOptions={'pagination': True, 'theme': 'themeBalham'}
+        ),
+        html.H1(children='Leases'),
+        dag.AgGrid(
+            rowData=lease_bin_df.to_dict('records'),
+            columnDefs=[{"field": i, 'filter': True} for i in lease_bin_df.columns],
+            dashGridOptions={'pagination': True, 'theme': 'themeBalham'}
+        ),
+        html.H1(children='payments'),
+        dag.AgGrid(
+            rowData=squab.to_dict('records'),
+            columnDefs=[{"field": i, 'filter': True} for i in squab.columns],
+            dashGridOptions={'pagination': True, 'theme': 'themeBalham'}
+        )
     ]
 
-    # https://dash.plotly.com/dash-ag-grid/getting-started > skip to section on callbacks
-    # @callback(
-    #     Output(component_id='my-final-graph-example', component_property='figure'),
-    #     Input(component_id='my-final-radio-item-example', component_property='value')
-    # )
-    # def update_graph(col_chosen):
-    #     fig = px.histogram(contract_bin_df, x='agency_name', y=col_chosen, histfunc='avg')
-    #     return fig
+    @callback(
+        Output("contracts-grid", "exportDataAsCsv"),
+        Input("csv-button", "n_clicks"),
+    )
+    def export_data_as_csv(n_clicks):
+        if n_clicks:
+            return True
+        return False
 
     # Run the app
     app.run(debug=True)
