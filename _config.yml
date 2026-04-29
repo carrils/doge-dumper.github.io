@@ -13,26 +13,59 @@
 # https://learnxinyminutes.com/docs/yaml/
 #
 # Site settings
-# These are used to personalize your new site. If you look in the HTML files,
+# These are used to personalize your new sitqe. If you look in the HTML files,
 # you will see them accessed via {{ site.title }}, {{ site.email }}, and so on.
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: Your awesome title
-email: your-email@example.com
+title: doge explorer
+email: scarrillo578@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
   Write an awesome description for your new site here. You can edit this
   line in _config.yml. It will appear in your document head meta (for
   Google search results) and in your feed.xml site description.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
-twitter_username: jekyllrb
-github_username:  jekyll
+github_username:  carrils
 
 # Build settings
-theme: minima
-plugins:
-  - jekyll-feed
+theme: just-the-docs
+#plugins:
+#  - jekyll-feed
+
+# Just-The-Docs Settings
+#logo: "/assets/images/just-the-docs.png"  # a logo that will be displayed instead of the title
+#favicon_ico: "/assets/images/favicon.ico"  # a favicon that will be displayed by the browser
+search_enabled: true  # enable or disable search
+nav_enabled: true  # sidebar can also be enabled or disabled using page variables or the minimal layout
+heading_anchors: true  # Heading anchor links appear on hover over h1-h6 tags in page content
+color_scheme: light  # dark or light
+enable_copy_code_button: true  # enable copying on code blocks
+
+# Just-The-Docs callouts/highlights
+callouts:
+  highlight:  # {: .highlight }
+    title: highlight
+    color: yellow
+  important:  # {: .important }
+    title: Important
+    color: blue
+  new:  # {: .new }
+    title: New
+    color: green
+  note:  # {: .note }
+    title: Note
+    color: purple
+  warning:  # {: .warning }
+    title: Warning
+    color: red
+
+include:
+  - _pages
+
+sass:
+  quiet_deps: true
+
 
 # Exclude from processing.
 # The following items will not be processed, by default.

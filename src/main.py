@@ -12,7 +12,9 @@ import xlsxwriter
 
 
 # TODO
-# Make script runnable from any directory
+# make it a github pages website with jekyll
+# refactor the data dump into a separate feature/section on the website
+# add in visualization stuff
 
 def main():
     start_time = datetime.now()

@@ -3,3 +3,10 @@ _site
 .jekyll-cache
 .jekyll-metadata
 vendor
+.DS_Store
+.idea/
+tmp/doge-obbies.txt
+files/
+src/ref_code/
+src/soup.py
+tmp/
