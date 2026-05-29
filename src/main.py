@@ -29,7 +29,6 @@ def main():
     grant_bin_df = pd.read_json('tmp/data/grants-3-30-26.json')
     lease_bin_df = pd.read_json('tmp/data/leases-3-30-26.json')
     squab = pd.read_json('tmp/data/payments-3-30-26.json')
-    print('[ ---- AUTOBOT FUCKMODE ENGAGED (json loaded) ---- ]')
 
     def generate_table(dataframe, max_rows=10):
         return html.Table([
